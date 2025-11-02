@@ -232,7 +232,7 @@ server {
 }
 ```
 
-✅ Tes dari client:
+Tes dari client:
 ```
 lynx http://k08.com
 ```
