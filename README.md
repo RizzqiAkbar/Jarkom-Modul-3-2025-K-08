@@ -4,7 +4,7 @@ Anggota :
 |NRP|NAMA|
 |---|---|
 |5027241044|Rizqi Akbar Sukirman Putra|
-|502724117|Adinda Cahya Pramesti|
+|5027241117|Adinda Cahya Pramesti|
 
 
 # Topologi Umum
