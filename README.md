@@ -236,6 +236,50 @@ Tes dari client:
 ```
 lynx http://k08.com
 ```
-```
-
 → Menampilkan halaman Laravel default.
+
+
+# Soal 12
+Para Penguasa Peri (Galadriel, Celeborn, Oropher) membangun taman digital mereka menggunakan PHP. Instal nginx dan php8.4-fpm di setiap node worker PHP. Buat file index.php sederhana di /var/www/html masing-masing yang menampilkan nama hostname mereka. Buat agar akses web hanya bisa melalui domain nama, tidak bisa melalui ip.
+![WhatsApp Image 2025-11-05 at 18 05 50_edcef6ab](https://github.com/user-attachments/assets/0f4218e1-6b65-4386-bf8c-0d0e257d7ca4)
+<img width="2568" height="1319" alt="image" src="https://github.com/user-attachments/assets/17e1bc37-2da4-464a-832e-585e589c1f1b" />
+![WhatsApp Image 2025-11-05 at 18 09 02_e1295af1](https://github.com/user-attachments/assets/4ba6a92d-e491-4578-bf07-9df86339d6e2)
+
+### cara running
+- echo "192.215.2.201 galadriel.k08.com" >> /etc/hosts
+- curl http://galadriel.k08.com ATAU lynx http://galadriel.k08.com
+- curl http://192.215.2.201 (harus 403 forbidden karena tidak bisa melalui IP)
+
+# Soal 13
+Setiap taman Peri harus dapat diakses. Konfigurasikan nginx di setiap worker PHP untuk meneruskan permintaan file .php ke socket php-fpm yang sesuai. Atur agar Galadriel mendengarkan di port 8004, Celeborn di 8005, dan Oropher di 8006.
+![WhatsApp Image 2025-11-05 at 18 11 53_36db3423](https://github.com/user-attachments/assets/d72b2558-c8b4-4412-bae1-d94fac8b65fa)
+
+### cara running
+- echo "192.215.2.201 galadriel.k08.com" >> /etc/hosts
+- curl http://galadriel.k08.com:8004
+- curl http://192.215.2.201:8004
+
+# Soal 14
+Keamanan adalah prioritas. Terapkan Basic HTTP Authentication pada nginx di setiap worker PHP, sehingga hanya mereka yang tahu kata sandi (user: noldor, pass: silvan) yang bisa masuk.
+![WhatsApp Image 2025-11-05 at 18 24 28_329a57a0](https://github.com/user-attachments/assets/a415328f-b954-432c-9cd5-e16fe67faad3)
+
+### cara running
+- curl -u noldor:silvan http://galadriel.k08.com:8004 (pake username sama password)
+- curl -u http://galadriel.k08.com:8004 (gapake uname sama password bakal output 401)
+
+
+# Soal 15
+Para Peri ingin tahu siapa yang mengunjungi taman mereka. Modifikasi konfigurasi Nginx di worker PHP untuk menambahkan header X-Real-IP yang akan diteruskan ke PHP. Ubah file index.php untuk menampilkan alamat IP pengunjung asli saat ini.
+![WhatsApp Image 2025-11-05 at 18 27 15_f3829d06](https://github.com/user-attachments/assets/04686cc4-cf4e-41ee-9a37-5c6ea2cf1da4)
+
+### cara running
+- curl http://Celeborn.k08.com:8005 
+
+# Soal 16
+Raja Númenor terakhir yang ambisius, Pharazon, mencoba mengawasi taman-taman Peri. Konfigurasikan Nginx di Pharazon sebagai reverse proxy. Buat upstream Kesatria_Lorien berisi alamat ketiga worker PHP. Atur agar permintaan ke pharazon.<xxxx>.com diteruskan ke backend, dan pastikan konfigurasi Nginx di sPharazon juga meneruskan informasi Basic Authentication yang dimasukkan pengguna ke worker.
+
+### cara running
+- curl -u noldor:silvan http://pharazon.k08.com (bisa dicoba dari pharozan atau node lain)
+
+
+# Soal 17
