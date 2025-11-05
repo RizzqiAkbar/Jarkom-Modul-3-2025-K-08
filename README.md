@@ -11,11 +11,14 @@ Anggota :
 
 Seluruh jaringan terhubung melalui node utama Durin dan terdiri dari beberapa subnet:
 
-Subnet	Fungsi	Gateway	Node Anggota
-192.215.1.0/24	Laravel Worker	192.215.1.1	Elendil, Isildur, Anarion
-192.215.2.0/24	PHP Worker	192.215.2.1	Galadriel, Celeborn, Oropher
-192.215.3.0/24	DNS (Master–Slave)	192.215.3.1	Erendis, Amdir
-192.215.4.0/24	Infrastruktur & Database	192.215.4.1	Aldarion (DHCP), Palantir (DB + Nginx LB)
+|Subnet	|Fungsi	|Gateway	|Node Anggota|
+|192.215.1.0/24	|Laravel Worker	|192.215.1.1|	Elendil, Isildur, Anarion|
+|192.215.2.0/24	|PHP Worker	|192.215.2.1|	Galadriel, Celeborn, Oropher|
+|192.215.3.0/24 |DNS (Master–Slave)	|192.215.3.1|	Erendis, Amdir|
+|192.215.4.0/24	|Infrastruktur & Database |192.215.4.1|	Aldarion (DHCP), Palantir (DB + Nginx LB)|
+<img width="1100" height="770" alt="Screenshot 2025-10-31 223723" src="https://github.com/user-attachments/assets/13593ea2-d7bf-4e57-8faa-26e97fd8eb3e" />
+
+
 
 # Soal 1 – Konfigurasi Dasar Node
 
@@ -60,9 +63,33 @@ INTERFACESv4="eth0"
 
 DHCP diuji dengan dhclient -v pada node client dan berhasil memperoleh IP dari range 192.215.4.10–50.
 
-# Soal 3 – DNS Master (Erendis)
+Fixed Address Khamul:
+<img width="932" height="346" alt="Screenshot 2025-10-31 233147" src="https://github.com/user-attachments/assets/fd8da852-192e-4826-9a0a-a1cb320603d5" />
 
-Erendis berperan sebagai DNS Master Server untuk domain k08.com.
+# Soal 3 - Minastir DNS Forwarder
+/etc/bind/named.conf.options
+```
+options {
+    directory "/var/cache/bind";
+    forwarders { 192.168.122.1; 8.8.8.8; };
+    allow-query { any; };
+    listen-on { any; };
+    dnssec-validation no;
+};
+```
+Jalankan:
+```named -g -c /etc/bind/named.conf &```
+
+
+Lalu ubah resolver di semua node (selain Durin):
+```
+echo -e "nameserver 192.215.1.2\nsearch k08.com" > /etc/resolv.conf
+```
+<img width="544" height="521" alt="Screenshot 2025-10-31 233743" src="https://github.com/user-attachments/assets/eceb11f2-300f-4276-86b8-af496942bc2e" />
+
+# Soal 4 – DNS Master (Erendis)
+
+### Erendis berperan sebagai DNS Master Server untuk domain k08.com.
 
 ```
 File: /etc/bind/named.conf.local
@@ -98,9 +125,7 @@ anarion IN A 192.215.1.103
 www IN CNAME k08.com.
 ```
 
-# Soal 4 – DNS Slave (Amdir)
-
-Amdir adalah DNS Slave yang menerima transfer zona dari Erendis.
+### Amdir adalah DNS Slave yang menerima transfer zona dari Erendis.
 
 ```
 File: /etc/bind/named.conf.local
@@ -123,6 +148,8 @@ dig @192.215.3.102 www.k08.com
 ```
 
 → Menampilkan IP 192.215.4.102 dengan status NOERROR (sinkronisasi berhasil).
+<img width="988" height="699" alt="Screenshot 2025-10-31 235611" src="https://github.com/user-attachments/assets/265fc3bf-72fd-4175-8331-bb93fde72fc5" />
+<img width="1015" height="695" alt="Screenshot 2025-10-31 235714" src="https://github.com/user-attachments/assets/b32bec09-e6bd-4549-b12f-11fb24272b15" />
 
 # Soal 5 – TXT & PTR Record
 
@@ -156,8 +183,12 @@ ping www.k08.com
 ```
 
 Semua node berhasil resolve ke IP Palantir (192.215.4.102).
+<img width="748" height="423" alt="Screenshot 2025-11-01 000023" src="https://github.com/user-attachments/assets/8fb1d17a-64b8-4b2d-a369-a76273ccf50a" />
+<img width="763" height="423" alt="Screenshot 2025-11-01 000035" src="https://github.com/user-attachments/assets/18be085e-8c5c-4fd2-ba42-3c787f2580de" />
+<img width="763" height="536" alt="Screenshot 2025-11-01 000203" src="https://github.com/user-attachments/assets/4374eefc-bdf8-44b2-b73c-2b1793829533" />
 
 # Soal 7 – Laravel Worker Setup
+
 
 Laravel diinstal pada Elendil, Isildur, dan Anarion.
 Versi PHP yang digunakan: 8.4, dengan perbaikan dependency agar kompatibel.
@@ -177,6 +208,7 @@ nginx
 ```
 
 Laravel berhasil dijalankan pada port 8000 (php artisan serve --host=0.0.0.0).
+<img width="912" height="612" alt="Screenshot 2025-11-01 095236" src="https://github.com/user-attachments/assets/e0b0cd43-6d2a-4ddf-9038-bc2f9adf53e8" />
 
 # Soal 8 – Database & Nginx Reverse Proxy (Palantir)
 
