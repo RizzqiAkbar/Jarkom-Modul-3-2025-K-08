@@ -11,11 +11,12 @@ Anggota :
 
 Seluruh jaringan terhubung melalui node utama Durin dan terdiri dari beberapa subnet:
 
-|Subnet	|Fungsi	|Gateway	|Node Anggota|
-|192.215.1.0/24	|Laravel Worker	|192.215.1.1|	Elendil, Isildur, Anarion|
-|192.215.2.0/24	|PHP Worker	|192.215.2.1|	Galadriel, Celeborn, Oropher|
-|192.215.3.0/24 |DNS (Master–Slave)	|192.215.3.1|	Erendis, Amdir|
-|192.215.4.0/24	|Infrastruktur & Database |192.215.4.1|	Aldarion (DHCP), Palantir (DB + Nginx LB)|
+|Subnet|Fungsi|Gateway|Node Anggota|
+|---|---|---|---|
+|192.215.1.0/24|Laravel Worker|192.215.1.1|Elendil, Isildur, Anarion|
+|192.215.2.0/24|PHP Worker|192.215.2.1|Galadriel, Celeborn, Oropher|
+|192.215.3.0/24|DNS (Master–Slave)|192.215.3.1|Erendis, Amdir|
+|192.215.4.0/24|Infrastruktur & Database|192.215.4.1|Aldarion (DHCP), Palantir (DB + Nginx LB)|
 <img width="1100" height="770" alt="Screenshot 2025-10-31 223723" src="https://github.com/user-attachments/assets/13593ea2-d7bf-4e57-8faa-26e97fd8eb3e" />
 
 
